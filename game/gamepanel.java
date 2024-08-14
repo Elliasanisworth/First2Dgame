@@ -6,27 +6,46 @@ import java.awt.Graphics2D;
 
 import javax.swing.JPanel;
 
+import Tile.TileManager;
+import entity.player;
+import game.object.superObject;
+
 public class gamepanel extends JPanel implements Runnable {
-// screen setings 
+// SCREEN SETTINGS
 final int originalTitleSize = 16; // 16x16 Tile size
 final int scale = 3;
 
-final int tilesize = originalTitleSize * scale;
-final int maxScreenCol = 16;
-final int maxScreenRow = 12;
-final int screenWidth = tilesize*maxScreenCol;
-final int screenHeight = tilesize*maxScreenRow;
+ public final int tilesize = originalTitleSize * scale;
+public final int maxScreenCol = 16;
+public final int maxScreenRow = 12;
+public final int screenWidth = tilesize*maxScreenCol;
+public final int screenHeight = tilesize*maxScreenRow;
+
+//WORLD SETTINGS
+public final int maxWorldCol = 50;
+public final int maxWorldRow = 50;
+// public final int worldWidth = tilesize * maxScreenCol;
+// public final int worldHeight = tilesize * maxScreenRow;
 
 //FPS
 int FPS = 60;
 
+//SYSTEM
+TileManager tilem = new TileManager(this);
 keyhandler keyH = new keyhandler();
+
+//SOUND
+sound Music = new sound();
+sound SE = new sound();
+
+public collision colichecker = new collision(this);
+public AssetSetter aSetter = new AssetSetter(this);
 Thread gameThread;
 
-// Set player default position
-int playerX = 100;
-int playerY = 100;
-int playerSpeed = 4;
+// ENTITY AND OBJECT
+public player Player =new player(this,keyH);
+public superObject obj[] = new superObject[10];
+
 
 public gamepanel() {
     this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -34,6 +53,11 @@ public gamepanel() {
     this.setDoubleBuffered(true);
     this.addKeyListener(keyH);
     this.setFocusable(true); // with this, this gamepanel can be "focused" to receive key input.
+}
+
+public void setUpGame(){
+    aSetter.setObject();
+    playMusic(0);
 }
 
 public void startGameThread() {
@@ -98,28 +122,41 @@ public void run() {
     }
 }
 public void update() {
-    if(keyH.uppressed == true) {
-        playerY -= playerSpeed; // playerY = playerY - playerSpeed;
-    }
-    else if(keyH.downpressed) {
-      playerY += playerSpeed;  
-    }
-    else if(keyH.leftpressed) {
-        playerX -= playerSpeed;
-    }
-    else if(keyH.rightpressed) {
-        playerX += playerSpeed;
-    }
+    Player.update();
 
 }
 public void paintComponent(Graphics g) {
     super.paintComponent(g);
-
     Graphics2D g2 = (Graphics2D)g;
-    g2.setColor(Color.white);
 
-    g2.fillRect(playerX, playerY, tilesize, tilesize);
+    //TILE
+    tilem.draw(g2);
+
+    //OBJECT
+    for(int i = 0; i< obj.length; i++){
+        if(obj[i] != null){
+            obj[i].draw(g2, this);
+        }
+    }
+
+    //PLAYER
+     Player.draw(g2);
 
     g2.dispose();
-}
+    }
+
+    public void playMusic(int i){
+        Music.setFile(i);
+        Music.Play();
+        Music.loop();
+    }
+    public void StopMusic(){
+        
+        Music.Stop();
+    }
+    public void PlaySE (int i)
+    {
+        SE.setFile(i);
+        SE.Play();
+    }
 }

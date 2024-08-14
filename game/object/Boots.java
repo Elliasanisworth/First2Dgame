@@ -1,0 +1,16 @@
+package game.object;
+
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
+public class Boots extends superObject {
+    public Boots(){
+        name = "Boots";
+        try{
+            image = ImageIO.read(getClass().getResourceAsStream("/res/objects/boots.png"));
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+     }
+}
