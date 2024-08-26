@@ -3,12 +3,15 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import javax.swing.JPanel;
 
 import Tile.TileManager;
+import entity.entity;
 import entity.player;
-import game.object.superObject;
 
 public class gamepanel extends JPanel implements Runnable {
 // SCREEN SETTINGS
@@ -16,8 +19,8 @@ final int originalTitleSize = 16; // 16x16 Tile size
 final int scale = 3;
 
  public final int tilesize = originalTitleSize * scale;
-public final int maxScreenCol = 16;
-public final int maxScreenRow = 12;
+public final int maxScreenCol = 16;  //game window width
+public final int maxScreenRow = 13;  // game window heinght
 public final int screenWidth = tilesize*maxScreenCol;
 public final int screenHeight = tilesize*maxScreenRow;
 
@@ -32,7 +35,7 @@ int FPS = 60;
 
 //SYSTEM
 TileManager tilem = new TileManager(this);
-keyhandler keyH = new keyhandler();
+ public keyhandler keyH = new keyhandler(this);
 
 //SOUND
 sound Music = new sound();
@@ -40,12 +43,23 @@ sound SE = new sound();
 
 public collision colichecker = new collision(this);
 public AssetSetter aSetter = new AssetSetter(this);
+public UI ui = new UI(this);
+public EventHandler eHandler =new EventHandler(this);
 Thread gameThread;
 
 // ENTITY AND OBJECT
 public player Player =new player(this,keyH);
-public superObject obj[] = new superObject[10];
+public entity obj[] = new entity[10];
+public entity Npc[] = new entity[10];
+public entity monster[] = new entity[20];
+ArrayList<entity> entityList = new ArrayList<>();
 
+//GAME STATE
+public int gameState;
+public final int titleState = 0;
+public final int playState = 1;
+public final int pauseState = 2;
+public final int dialogueState = 3;
 
 public gamepanel() {
     this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -57,7 +71,10 @@ public gamepanel() {
 
 public void setUpGame(){
     aSetter.setObject();
-    playMusic(0);
+    aSetter.setNPC(); 
+    aSetter.setMonster();
+    // playMusic(0);
+    gameState = titleState;
 }
 
 public void startGameThread() {
@@ -65,7 +82,7 @@ public void startGameThread() {
     gameThread.start();
 }
 
-@Override
+// @Override
                                                 // sleep method
 // public void run() {
     
@@ -121,26 +138,95 @@ public void run() {
 
     }
 }
+
 public void update() {
-    Player.update();
+
+    if(gameState == playState){
+        //PLAYER
+        Player.update();
+
+        //NPC
+        for(int i = 0;i<Npc.length; i++){
+            if(Npc[i] != null){
+                Npc[i].update();
+            }
+        }
+        for(int i = 0; i < monster.length; i++){
+            if(monster[i] != null){
+                monster[i].update();
+            }
+        }
+    }
+    if(gameState == pauseState){
+        //nothing
+    }
 
 }
 public void paintComponent(Graphics g) {
     super.paintComponent(g);
     Graphics2D g2 = (Graphics2D)g;
 
+     //DEBUG
+     long drawStart = 0;
+     if(keyH.checkDrawTime == true){
+         drawStart = System.nanoTime();
+     }
+
+     //TITLE SCREEN
+     if(gameState == titleState){
+        ui.draw(g2);
+     }else{
+
     //TILE
     tilem.draw(g2);
 
-    //OBJECT
-    for(int i = 0; i< obj.length; i++){
-        if(obj[i] != null){
-            obj[i].draw(g2, this);
+    //ADD ENTITY TO LIST   
+    entityList.add(Player);
+
+    for(int i = 0; i < Npc.length; i++){
+        if(Npc[i] != null){
+            entityList.add(Npc[i]);
         }
     }
+    for(int i = 0; i < obj.length; i++){
+        if(obj[i] != null){
+            entityList.add(obj[i]);
+        }
+    } 
+    for(int i = 0; i < monster.length; i++){
+        if(monster[i] != null){
+            entityList.add(monster[i]);
+        }
+    }
+    //SHORTING
+    Collections.sort(entityList , new Comparator<entity>() {
 
-    //PLAYER
-     Player.draw(g2);
+        @Override
+        public int compare(entity e1, entity e2) {
+            
+            int result = Integer.compare(e1.worldY, e2.worldY);
+            return result;
+        }
+        
+    });
+    //draw entity
+    for(int i = 0; i < entityList.size(); i++){
+        entityList.get(i).draw(g2);
+    }
+    //empty entity list
+    entityList.clear();
+
+     //UI
+     ui.draw(g2);
+}
+    //DEBUG
+    if(keyH.checkDrawTime == true){
+        long drawEnd = System.nanoTime();
+        long passed = drawEnd - drawStart;
+        g2.setColor(Color.white);
+        g2.drawString("Draw TIme:" + passed, 10, 400);
+        System.out.println("draw time: "+passed);
+    }
 
     g2.dispose();
     }

@@ -1,16 +1,13 @@
 package game.object;
 
-import java.io.IOException;
 
-import javax.imageio.ImageIO;
+import entity.entity;
+import game.gamepanel;
 
-public class Boots extends superObject {
-    public Boots(){
+public class Boots extends entity {
+    public Boots(gamepanel gp){
+        super(gp);
         name = "Boots";
-        try{
-            image = ImageIO.read(getClass().getResourceAsStream("/res/objects/boots.png"));
-        }catch(IOException e){
-            e.printStackTrace();
-        }
+        down1 = setup("/objects/boots",gp.tilesize, gp.tilesize);
      }
 }
