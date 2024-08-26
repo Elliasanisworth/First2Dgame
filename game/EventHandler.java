@@ -41,8 +41,8 @@ public class EventHandler {
          canTouchEvent = true;
       } 
       if(canTouchEvent == true){
-         if(hit(27,16,"right") == true){damagePit( 27, 16,gp.dialogueState);} 
-         if(hit(23,12,"any")==true){healingPool(23, 12, gp.dialogueState);}       
+         if(hit(16,27,"right") == true){damagePit( 16, 27,gp.dialogueState);} 
+         if(hit(12,23,"any")==true){healingPool(12, 23, gp.dialogueState);}       
       }
      }
       public boolean hit(int Col, int Row, String reqDirection){
