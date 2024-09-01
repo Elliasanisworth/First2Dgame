@@ -19,8 +19,8 @@ final int originalTitleSize = 16; // 16x16 Tile size
 final int scale = 3;
 
  public final int tilesize = originalTitleSize * scale;
-public final int maxScreenCol = 16;  //game window width
-public final int maxScreenRow = 13;  // game window heinght
+public final int maxScreenCol = 19;  //game window width
+public final int maxScreenRow = 14;  // game window heinght
 public final int screenWidth = tilesize*maxScreenCol;
 public final int screenHeight = tilesize*maxScreenRow;
 
@@ -49,9 +49,10 @@ Thread gameThread;
 
 // ENTITY AND OBJECT
 public player Player =new player(this,keyH);
-public entity obj[] = new entity[10];
+public entity obj[] = new entity[20];
 public entity Npc[] = new entity[10];
 public entity monster[] = new entity[20];
+public ArrayList<entity> projectileList = new ArrayList<>();
 ArrayList<entity> entityList = new ArrayList<>();
 
 //GAME STATE
@@ -60,6 +61,7 @@ public final int titleState = 0;
 public final int playState = 1;
 public final int pauseState = 2;
 public final int dialogueState = 3;
+public final int charStatState = 4;
 
 public gamepanel() {
     this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -153,7 +155,23 @@ public void update() {
         }
         for(int i = 0; i < monster.length; i++){
             if(monster[i] != null){
-                monster[i].update();
+                if(monster[i].alive == true && monster[i].dying == false){
+                    monster[i].update();
+                }
+                if(monster[i].alive == false){
+                    monster[i].checkDrop();
+                    monster[i] = null;
+                }
+            }
+        }
+        for(int i = 0; i < projectileList.size(); i++){
+            if(projectileList.get(i) != null){
+                if(projectileList.get(i).alive == true){
+                    projectileList.get(i).update();
+                }
+                if(projectileList.get(i).alive == false){
+                    projectileList.remove(i);
+                }
             }
         }
     }
@@ -196,6 +214,11 @@ public void paintComponent(Graphics g) {
     for(int i = 0; i < monster.length; i++){
         if(monster[i] != null){
             entityList.add(monster[i]);
+        }
+    }
+    for(int i = 0; i < projectileList.size(); i++){
+        if(projectileList.get(i) != null){
+            entityList.add(projectileList.get(i));
         }
     }
     //SHORTING

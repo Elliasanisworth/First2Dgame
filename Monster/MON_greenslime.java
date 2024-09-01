@@ -4,6 +4,9 @@ import java.util.Random;
 
 import entity.entity;
 import game.gamepanel;
+import game.object.OBJ_Rock;
+import game.object.OBJ_coin_bronze;
+import game.object.OBJ_mana;
 
 public class MON_greenslime extends entity {
 
@@ -13,11 +16,15 @@ public class MON_greenslime extends entity {
 
         this.gp = gp;
         
-        type = 2;
+        type = type_monster;
         name = "Green Slime";
         speed = 1;
         maxLife = 4;
         life = maxLife;
+        attack = 5;
+        defense = 0;
+        exp = 2;
+        projectile = new OBJ_Rock(gp);
         
         solidArea.x = 3;
         solidArea.y = 18;
@@ -61,7 +68,30 @@ public class MON_greenslime extends entity {
                 direction = "right";
             }
             actionLockCounter = 0;
-          }
+            
+        }
+        int i = new Random().nextInt(100) + 1;
+        if(i > 99 && projectile.alive == false && shotAvailableCounter == 30){
+            projectile.set(worldX, worldY, direction, true, this);
+            gp.projectileList.add(projectile);
+            shotAvailableCounter = 0;
+        }
     }
-    
+    public void damageReaction(){
+        actionLockCounter = 0;
+        direction = gp.Player.direction;
+    }
+    public void checkDrop(){
+
+        //cast a die
+        int i = new Random().nextInt(100)+1;
+
+        // set the monster drop
+        if(i< 50){
+            dropItem(new OBJ_coin_bronze(gp));
+        }
+        if(i > 50 && i <= 100){
+            dropItem(new OBJ_mana(gp));
+        }
+    }
 }

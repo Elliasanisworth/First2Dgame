@@ -74,18 +74,22 @@ public class EventHandler {
      }
      public void damagePit(int col, int row, int gameState){
         gp.gameState = gameState;
+        gp.PlaySE(6);
         gp.ui.currentDialogue = "Why did i always do this!!!";
         gp.Player.life -= 1;
-      //   eventRect[col][row].eventDone = true;
       canTouchEvent = false;
 
      }
      public void healingPool(int col, int row, int gameState){
-      if(gp.keyH.enterpressed == true){
+
+      if(gp.keyH.enterpressed == true ){
          gp.gameState = gameState;
-         gp.ui.currentDialogue = "The water is clean hear. \nohh!! it have healing ability";
-         gp.Player.life += 1 ;
-       
+         gp.Player.attackCancled =true;
+         gp.PlaySE(2);
+         gp.ui.currentDialogue = "This must be a recovery Pool \nYour life and mana have been recovered. ";
+         gp.Player.life = gp.Player.maxLife ;
+         gp.Player.mana = gp.Player.maxMana;
+         gp.aSetter.setMonster();
       }
      }
 }
