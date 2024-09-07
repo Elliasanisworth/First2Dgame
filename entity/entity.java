@@ -129,6 +129,7 @@ public class entity  {
         gp.colichecker.checkObject(this, false);
         gp.colichecker.checkEntity(this, gp.Npc);
         gp.colichecker.checkEntity(this, gp.monster);
+        gp.colichecker.checkEntity(this, gp.iTile);
         boolean contactPlayer = gp.colichecker.checkPlayer(this); 
 
 

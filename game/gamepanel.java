@@ -10,6 +10,7 @@ import java.util.Comparator;
 import javax.swing.JPanel;
 
 import Tile.TileManager;
+import Tile_intractive.intractiveTile;
 import entity.entity;
 import entity.player;
 
@@ -52,6 +53,7 @@ public player Player =new player(this,keyH);
 public entity obj[] = new entity[20];
 public entity Npc[] = new entity[10];
 public entity monster[] = new entity[20];
+public intractiveTile  iTile[] = new intractiveTile[50];
 public ArrayList<entity> projectileList = new ArrayList<>();
 ArrayList<entity> entityList = new ArrayList<>();
 
@@ -72,9 +74,11 @@ public gamepanel() {
 }
 
 public void setUpGame(){
+
     aSetter.setObject();
     aSetter.setNPC(); 
     aSetter.setMonster();
+    aSetter.setInteractiveTile();
     // playMusic(0);
     gameState = titleState;
 }
@@ -174,6 +178,11 @@ public void update() {
                 }
             }
         }
+        for(int i = 0; i < iTile.length; i++){
+            if(iTile[i] != null){
+                iTile[i].update();
+            }
+        }
     }
     if(gameState == pauseState){
         //nothing
@@ -194,9 +203,15 @@ public void paintComponent(Graphics g) {
      if(gameState == titleState){
         ui.draw(g2);
      }else{
-
     //TILE
     tilem.draw(g2);
+
+        // ITNRACTIVE TILES
+    for(int i = 0; i < iTile.length; i++){
+        if(iTile[i] != null){
+            iTile[i].draw(g2);
+        }
+    }
 
     //ADD ENTITY TO LIST   
     entityList.add(Player);

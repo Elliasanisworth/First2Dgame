@@ -1,6 +1,7 @@
 package game;
 
 import Monster.MON_greenslime;
+import Tile_intractive.IT_DryTree;
 import entity.NPC_OldMan;
 import game.object.OBJ_Sheild_Blue;
 import game.object.OBJ_axe;
@@ -74,5 +75,27 @@ public class AssetSetter {
         i++;
 
 
+    }
+    public void setInteractiveTile(){
+        int i = 0;
+        //dry tree line
+        gp.iTile[i] = new IT_DryTree(gp,27,12);i++;
+        gp.iTile[i] = new IT_DryTree(gp,28,12);i++;
+        gp.iTile[i] = new IT_DryTree(gp,29,12);i++;
+        gp.iTile[i] = new IT_DryTree(gp,30,12);i++;
+        gp.iTile[i] = new IT_DryTree(gp,31,12);i++;
+        gp.iTile[i] = new IT_DryTree(gp,32,12);i++;
+        gp.iTile[i] = new IT_DryTree(gp,33,12);i++;
+
+        //dry tree place
+        gp.iTile[i] = new IT_DryTree(gp,29,20);i++;
+        gp.iTile[i] = new IT_DryTree(gp,29,21);i++;
+        gp.iTile[i] = new IT_DryTree(gp,29,22);i++;
+        gp.iTile[i] = new IT_DryTree(gp,20,20);i++;
+        gp.iTile[i] = new IT_DryTree(gp,20,21);i++;
+        gp.iTile[i] = new IT_DryTree(gp,20,22);i++;
+        gp.iTile[i] = new IT_DryTree(gp,22,18);i++;
+        gp.iTile[i] = new IT_DryTree(gp,23,18);i++;
+        gp.iTile[i] = new IT_DryTree(gp,24,18);i++;     
     }
 }

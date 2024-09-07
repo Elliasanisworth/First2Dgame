@@ -24,6 +24,7 @@ public class sound {
     SoundURL[10] = getClass().getResource("/res/Sound/cursor.wav");
     SoundURL[11] = getClass().getResource("/res/Sound/potion_drink.wav");
     SoundURL[12] = getClass().getResource("/res/Sound/fireball.wav");
+    SoundURL[13] = getClass().getResource("/res/Sound/cuttree.wav");
 
    }
 

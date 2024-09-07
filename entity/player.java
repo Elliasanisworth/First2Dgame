@@ -92,7 +92,6 @@ public class player extends entity {
         right1 = setup("/Player/blue-boy/boy_right_1",gp.tilesize, gp.tilesize);
         right2 = setup("/Player/blue-boy/boy_right_2",gp.tilesize, gp.tilesize);
      }
-
      public void getPlayerAttackImage(){
         if(currentWeapon.type == type_sword){
 
@@ -155,6 +154,9 @@ public class player extends entity {
        int monsterIndex = gp.colichecker.checkEntity(this, gp.monster);
        contactMonster(monsterIndex);
 
+       //CHECK INTRACTIVE TILE COLLISION
+       gp.colichecker.checkEntity(this, gp.iTile);
+
        //CHECK EVENT
        gp.eHandler.checkEvent();
 
@@ -176,7 +178,8 @@ public class player extends entity {
                 keyH.enterpressed = false;
                 gp.PlaySE(7);
             }
-            
+            //attack sound handle
+
 
             attackCancled = false;
             gp.keyH.enterpressed = false;
@@ -258,11 +261,15 @@ public class player extends entity {
             int monsterIndex = gp.colichecker.checkEntity(this, gp.monster);
             damageMonster(monsterIndex, attack);
 
+            int iTileIndex = gp.colichecker.checkEntity(this, gp.iTile);
+            damageInteractiveTile(iTileIndex);
+
             //restore original position and solidArea
             worldX = currentWorldX;
             worldY = currentWorldY;
             solidArea.width = solidAreaWidth;
             solidArea.height = solidAreaHeight;
+            
         }else if(spriteCounter > 25){
             spriteNumber = 1; //end of attack
             spriteCounter = 0;
@@ -270,7 +277,6 @@ public class player extends entity {
 
         }
     }
-
      public void pickUpObj(int i){
         if( i != 999){
 
@@ -346,6 +352,18 @@ public class player extends entity {
                     exp += gp.monster[i].exp;
                     checkLevelUp();
                 }
+            }
+        }
+     }
+     public void damageInteractiveTile(int i){
+        if(i != 999 && gp.iTile[i].destructible == true && gp.iTile[i].isCorrectItem(this) == true && gp.iTile[i].invincible == false){
+
+            gp.iTile[i].life--;
+            gp.iTile[i].invincible = true;
+            
+            if(gp.iTile[i].life == 0){
+                gp.iTile[i] = gp.iTile[i].getDestroyedForm();
+                gp.PlaySE(13);
             }
         }
      }
